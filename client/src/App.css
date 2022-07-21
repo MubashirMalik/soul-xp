@@ -1,0 +1,31 @@
+.App {
+	display: flex;
+	flex-direction: column;
+	background-color: rgba(198, 190, 238, 0.502);
+	min-height: 100vh;
+  align-items: center;
+}
+
+.Form-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	align-content: center;
+	margin-bottom: 40px;
+}
+
+.App-body {
+	min-height: 100%;
+}
+
+.PageNotFound {
+	display: flex;
+	margin: 50px;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.PageNotFound > .emoji {
+	font-size: 10vw;
+}

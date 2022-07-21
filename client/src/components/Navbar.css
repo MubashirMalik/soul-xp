@@ -1,0 +1,66 @@
+.Navbar {
+  width: 100%;
+}
+
+header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	height: 70px;
+	background: rgba(255, 255, 255, 0.973);
+	border-bottom: 1px solid rgb(148, 163, 184, 0.3);
+}
+
+header > .logo {
+	margin-left: 20px;
+	font-weight: 600;
+	font-size: 26px;
+	line-height: 10px;
+}
+
+header > ul {
+	display: flex;
+	align-items: center;
+	margin-right: 20px;
+	list-style: none;
+	font-size: 18px;
+	gap: 10px;
+}
+
+header > ul > li {
+	padding: 10px;
+}
+
+header > ul > li > button {
+	color: white;
+	font-weight: 600;
+  height: 36px;
+	background-color: #00886B;
+	border-radius: 5px;
+  border: none;
+	cursor: pointer;
+}
+
+.cart {
+	display: flex;
+	align-items: center;
+	background-color: #e7a4d0;
+	padding: 6px;
+	border-radius: 10px;
+}
+
+.cart:hover {
+	animation: shake 0.1s ease-in-out 0.1s infinite alternate;
+	cursor: pointer;
+}
+
+@keyframes shake {
+	from {
+		 -webkit-transform: rotate(2deg);
+	}
+	to {
+		-webkit-transform-origin:center center;
+		-webkit-transform: rotate(-2deg);
+	}
+ }
