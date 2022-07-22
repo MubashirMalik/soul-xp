@@ -17,9 +17,8 @@ import CompanyPage from './components/CompanyPage';
 
 export default function App() {
   const [address, setAddress] = useState("");
-
+  const [isRegistered, setIsRegistered] = useState(false)
   
-
   useEffect(() => {
     if (typeof window.ethereum !== 'undefined') {
       window.ethereum.request({ method: 'eth_requestAccounts' })
@@ -48,7 +47,7 @@ export default function App() {
         <Routes>
           <Route exact path="/" element={<LandingPage /> } />
           <Route exact path="/candidate-page" element={<CandidatePage address={address}/>} />
-          <Route exact path="/company-page" element={<CompanyPage address={address}/>} />
+          <Route exact path="/company-page" element={<CompanyPage address={address} isRegistered={isRegistered} setIsRegistered={setIsRegistered} />} />
           <Route path="*" element={ <PageNotFound />}/>
         </Routes>
         <ToastContainer />

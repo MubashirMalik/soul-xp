@@ -5,15 +5,13 @@ import { displayToast } from '../Util';
 import './CompanyPage.css';
 import { handleError } from '../ErrorHandler';
 
-export default function CompanyPage({address}) {
-  const [isRegistered, setIsRegistered] = useState(false)
+export default function CompanyPage({address, isRegistered, setIsRegistered}) {
   const [error, setError] = useState()
-
   useEffect(() => {
     async function getCountIssued() {
       try {
         let result = await SBT.methods.getCountIssued().call({from: address, gas: 30000});
-        if (result !== 0) {
+        if (parseInt(result) !== 0) {
           setIsRegistered(true)
         }
       } catch(err) {
@@ -21,7 +19,7 @@ export default function CompanyPage({address}) {
       }
     }
     getCountIssued()
-  }, [address]) 
+  }, [address, setIsRegistered]) 
 
   function handleSubmit(event) {
     event.preventDefault()
@@ -34,7 +32,7 @@ export default function CompanyPage({address}) {
       SBT.methods.registerCompany().send({from: address, gas: 300000}).then(
         async (tx) => {
           let result = await SBT.methods.getCountIssued().call({from: address, gas: 30000});
-          if (result === 1) {
+          if (parseInt(result) === 1) {
             setIsRegistered(true);
             displayToast("Company registered!", "success");
           }
@@ -53,7 +51,7 @@ export default function CompanyPage({address}) {
             You are not registerd!
           </div>
           : 
-          <div className="row"><h2>Pending Requests (Skill-SBT)</h2></div>}
+          <div className="row"><h2>Pending Token Requests</h2></div>}
       </div>
       <div className="Container-form">
         {isRegistered ?
@@ -84,6 +82,4 @@ export default function CompanyPage({address}) {
       <ToastContainer />
     </div>
   )
-
-
 }
