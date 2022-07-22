@@ -24,6 +24,21 @@ contract SBT {
     */
     mapping (address => uint) private countIssued;
 
+    /** 
+     * @dev Registers the caller with the contract.
+     *
+     * Requirements:
+     *
+     * - the caller (company) must not be already registered.
+     */
+    function registerCompany() external returns (bool) {
+        if (countIssued[msg.sender] != 0) {
+            return false;
+        }
+        countIssued[msg.sender] = 1;
+        return true;
+    }
+
     /**
      * @dev Requests a SBT from `company` for the caller's account.
      *
@@ -43,5 +58,12 @@ contract SBT {
 
         pendingSBTRequests[company][msg.sender] = credentialId;
         return true;
+    }
+
+    /** 
+    * @dev Returns count of SBT issued by the caller (company)
+    */
+    function getCountIssued() external view returns (uint) {
+        return countIssued[msg.sender];
     }
 }

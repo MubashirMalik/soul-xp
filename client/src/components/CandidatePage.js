@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { web3, SBT } from '../Web3Client';
 import { handleError } from '../ErrorHandler';
 import './CandidatePage.css';
+import { addressShortner } from '../Util';
 
 export default function CandidatePage({address}) {
   
@@ -32,7 +33,6 @@ export default function CandidatePage({address}) {
 
     if (_error === "") {
       try {
-        console.log(address)
         await SBT.methods.requestSBT(formData.companyAddress, web3.utils.utf8ToHex(formData.credentialId)).send({from: address, gas: 30000});
         // call pending requests here
       } catch (err) {
@@ -44,8 +44,10 @@ export default function CandidatePage({address}) {
   return(
     <div className="Container">
       <div className="Container-view">
-        <div className="row"><h2>Issued Skill-SBT</h2></div>
         <div className="row">
+          <h2>Issued Tokens</h2><a title="Click to know more!" href="/">Soul Address:</a> {addressShortner(address)}
+        </div>
+        <div className="row" style={{backgroundColor: "#f5e6db"}}>
           <div>
             <div className="bold">Skill</div>
             <div>Cplusplus</div>
@@ -67,7 +69,7 @@ export default function CandidatePage({address}) {
           </div>
           
         </div>
-        <div className="row"><h2>Pending Skill-SBT</h2></div>
+        <div className="row"><h2>Requested Tokens</h2>[Pending]</div>
       </div>
       <div className="Container-form">
         <div className="Form-container">

@@ -1,45 +1,9 @@
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import { Link, useNavigate } from "react-router-dom";
+import { addressShortner } from "../Util";
 import './Navbar.css';
 
-export default function Navbar({address, setAddress}) {
-  useEffect(() => {
-    if (window.ethereum) {
-      //displayToast("MetaMask detected!", "info");
-    }
-  }, [])
-
-  function displayToast(message, type) {
-    toast[type](message, {
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-  }
-
-  async function requestAccount() {
-    if (address !== "" && window.ethereum) {
-      displayToast("You are already connected to MetaMask!", "info");
-    } else if (window.ethereum) {
-        try {
-          const accounts = await window.ethereum.request({
-            method: "eth_requestAccounts",
-          })
-          setAddress(accounts[0]);
-          displayToast("Connected to MetaMask!", "success");
-        } catch(error) {
-          displayToast("Error connecting to MetaMask..", "error");
-        }
-    } else {
-      displayToast("Could not detect MetaMask!", "warning");
-    }
-  }
+export default function Navbar({address}) {
+  const navigate = useNavigate();
 
 	return (
 		<div className="Navbar">
@@ -47,12 +11,13 @@ export default function Navbar({address, setAddress}) {
         <div className="logo"><Link to="/">Soul-XP</Link></div>
         <ul>
           { address !== "" ? 
-            <li>Connected to: { address.slice(0, 7) }...{address.slice(address.length-5, address.length) }</li> :
-            <li><button onClick={requestAccount}>Connect Wallet</button></li>
+            <li>Connected to: { addressShortner(address) }</li> :
+            <li>Not Connected!</li>
           }
+          <li><button onClick={() => navigate('/candidate-page')}>Candidate Page</button></li>
+          <li><button onClick={() => navigate('/company-page')}>Company Page</button></li>
         </ul>
       </header>
-			<ToastContainer />
 		</div>
 	)
 }

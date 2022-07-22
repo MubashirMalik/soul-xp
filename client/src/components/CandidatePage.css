@@ -22,7 +22,7 @@
 }
 
 .Container-view > .row {
-  background-color: #c6beee;
+  background-color: rgb(221, 235, 248);
   padding: 20px;
   border-radius: 10px;
 }
