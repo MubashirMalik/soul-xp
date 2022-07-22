@@ -7,7 +7,7 @@ import './Navbar.css';
 export default function Navbar({address, setAddress}) {
   useEffect(() => {
     if (window.ethereum) {
-      displayToast("MetaMask detected!", "info");
+      //displayToast("MetaMask detected!", "info");
     }
   }, [])
 
@@ -45,9 +45,12 @@ export default function Navbar({address, setAddress}) {
 		<div className="Navbar">
       <header>
         <div className="logo"><Link to="/">Soul-XP</Link></div>
-				<ul>
-					<li><button onClick={requestAccount}>Connect Wallet</button></li>
-				</ul> 
+        <ul>
+          { address !== "" ? 
+            <li>Connected to: { address.slice(0, 7) }...{address.slice(address.length-5, address.length) }</li> :
+            <li><button onClick={requestAccount}>Connect Wallet</button></li>
+          }
+        </ul>
       </header>
 			<ToastContainer />
 		</div>

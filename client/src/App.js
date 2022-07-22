@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import LandingPage from './components/LandingPage';
@@ -10,9 +10,12 @@ import {
 	Routes
  } from "react-router-dom";
 
-
 export default function App() {
   const [address, setAddress] = useState("");
+
+  useEffect(() => {
+    
+  }, [])
 
   return (
     <div className="App">
@@ -20,7 +23,7 @@ export default function App() {
       <div className="App-body">
         <Routes>
           <Route exact path="/" element={<LandingPage /> } />
-          <Route exact path="/candidate-page" element={<CandidatePage />} />
+          <Route exact path="/candidate-page" element={<CandidatePage address={address}/>} />
         </Routes>
       </div>
       <Footer />

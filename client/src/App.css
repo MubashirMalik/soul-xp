@@ -4,6 +4,7 @@
 	background-color: rgba(198, 190, 238, 0.502);
 	min-height: 100vh;
   align-items: center;
+	width: 100%;
 }
 
 .Form-container {
@@ -16,6 +17,7 @@
 
 .App-body {
 	min-height: 100%;
+	width: 100%;
 }
 
 .PageNotFound {
