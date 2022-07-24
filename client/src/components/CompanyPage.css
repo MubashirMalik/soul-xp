@@ -1,0 +1,16 @@
+.row > .buttons {
+  justify-content: center !important;
+}
+
+.row > .buttons > button {
+  padding: 6px;
+  margin-left: 20px;
+  margin-top: 20px;
+  color: white;
+	font-weight: 600;
+  height: 36px;
+	background-color: #00886B;
+	border-radius: 5px;
+  border: none;
+	cursor: pointer;
+}

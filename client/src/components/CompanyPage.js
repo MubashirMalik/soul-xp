@@ -1,12 +1,17 @@
 import { useState, useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { SBT } from '../Web3Client';
-import { displayToast } from '../Util';
+import { web3, SBT } from '../Web3Client';
+import { displayToast, addressShortner } from '../Util';
 import './CompanyPage.css';
 import { handleError } from '../ErrorHandler';
 
 export default function CompanyPage({address, isRegistered, setIsRegistered}) {
   const [error, setError] = useState()
+  const [pendingSBTCompany, setPendingSBTCompany] = useState({
+    addresses: [],
+    credentialIds: []
+  })
+
   useEffect(() => {
     async function getCountIssued() {
       try {
@@ -14,6 +19,11 @@ export default function CompanyPage({address, isRegistered, setIsRegistered}) {
         if (parseInt(result) !== 0) {
           setIsRegistered(true)
         }
+        result = await SBT.methods.getPendingSBTCompany().call({from: address, gasLimit: 300000});
+        setPendingSBTCompany({
+          addresses: result[1],
+          credentialIds: result[0]
+        });      
       } catch(err) {
         setError(handleError(err.message))
       }
@@ -43,6 +53,25 @@ export default function CompanyPage({address, isRegistered, setIsRegistered}) {
     }
   }
 
+  const displayPendingSBTCompany = pendingSBTCompany.addresses.map((addr, index) => {
+    return (
+      <div className="row" style={{backgroundColor: "#f5e6db"}}>
+        <div>
+          <div>Candidate Address</div>
+          <div>{addressShortner(addr)}</div>
+        </div>
+        <div>
+          <div>Credential Id [Token]</div>
+          <div>{web3.utils.hexToUtf8(pendingSBTCompany.credentialIds[index])}</div>
+        </div>
+        <div className="buttons">
+          <button>Accept Request</button>
+          <button>Reject Request</button>
+        </div>
+      </div>
+    ) 
+  })
+
   return(
     <div className="Container">
       <div className="Container-view">
@@ -50,8 +79,17 @@ export default function CompanyPage({address, isRegistered, setIsRegistered}) {
           <div className="row">
             You are not registerd!
           </div>
-          : 
-          <div className="row"><h2>Pending Token Requests</h2></div>}
+          :
+          <>
+            <div className="row"><h2>Pending Token Requests</h2></div>
+            { 
+            pendingSBTCompany.addresses.length === 0 ? 
+            <div className="row" style={{backgroundColor: "#f5e6db"}}>You have no requests to respond to.</div>
+            :
+            displayPendingSBTCompany
+            } 
+          </>
+        }
       </div>
       <div className="Container-form">
         {isRegistered ?

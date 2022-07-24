@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { web3, SBT } from '../Web3Client';
 import { handleError } from '../ErrorHandler';
 import './CandidatePage.css';
@@ -11,6 +11,22 @@ export default function CandidatePage({address}) {
     credentialId: ""
   })
   const [error, setError] = useState("")
+  const [pendingSBTCandidate, setPendingSBTCandidate] = useState({
+    addresses: [],
+    credentialIds: []
+  })
+
+  useEffect(() => {
+    async function getPendingSBTCandidate() {
+      let result = await SBT.methods.getPendingSBTCandidate().call({from: address, gasLimit: 300000});
+      setPendingSBTCandidate({
+        addresses: result[1],
+        credentialIds: result[0]
+      });      
+    }
+    getPendingSBTCandidate();
+  }, [address, setPendingSBTCandidate])
+
 
   function handleChange(event) {
     setFromData(prevFromData => {
@@ -33,13 +49,33 @@ export default function CandidatePage({address}) {
 
     if (_error === "") {
       try {
-        await SBT.methods.requestSBT(formData.companyAddress, web3.utils.utf8ToHex(formData.credentialId)).send({from: address, gas: 30000});
+        await SBT.methods.requestSBT(formData.companyAddress, web3.utils.utf8ToHex(formData.credentialId)).send({from: address, gasLimit: 300000});
         // call pending requests here
+        let result = await SBT.methods.getPendingSBTCandidate().call({from: address, gasLimit: 300000});
+        setPendingSBTCandidate({
+          addresses: result[1],
+          credentialIds: result[0]
+        });  
       } catch (err) {
         setError(handleError(err.message))
       }
     }
   }
+
+  const displayPendingSBTCandidate = pendingSBTCandidate.addresses.map((addr, index) => {
+    return (
+      <div className="row" style={{backgroundColor: "#f5e6db"}}>
+        <div>
+          <div>Compay Address</div>
+          <div>{addressShortner(addr)}</div>
+        </div>
+        <div>
+          <div>Credential Id [Token]</div>
+          <div>{web3.utils.hexToUtf8(pendingSBTCandidate.credentialIds[index])}</div>
+        </div>
+      </div>
+    ) 
+  })
 
   return(
     <div className="Container">
@@ -70,6 +106,12 @@ export default function CandidatePage({address}) {
           
         </div>
         <div className="row"><h2>Requested Tokens</h2>[Pending]</div>
+         {pendingSBTCandidate.addresses.length === 0 ? 
+            <div className="row" style={{backgroundColor: "#f5e6db"}}>"You have no pending requests."</div>
+            :
+            displayPendingSBTCandidate
+          }
+        
       </div>
       <div className="Container-form">
         <div className="Form-container">

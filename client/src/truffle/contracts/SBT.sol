@@ -14,6 +14,8 @@ contract SBT {
     }
 
     mapping(address => mapping(address => bytes)) private pendingSBTRequests;
+    mapping(address => address[]) private pendingSBTCandidate;
+    mapping(address => address[]) private pendingSBTCompany;
 
     /** 
      * @dev Tracks the count of a company's issued SBT
@@ -57,13 +59,39 @@ contract SBT {
         require (pendingSBTRequests[company][msg.sender].length == 0, "SBT: request is already in pending list");
 
         pendingSBTRequests[company][msg.sender] = credentialId;
+        pendingSBTCandidate[msg.sender].push(company);
+        pendingSBTCompany[company].push(msg.sender);
         return true;
     }
 
     /** 
-    * @dev Returns count of SBT issued by the caller (company)
-    */
+     * @dev Returns count of SBT issued by the caller (company)
+     */
     function getCountIssued() external view returns (uint) {
         return countIssued[msg.sender];
+    }
+
+    /**
+     * @dev Returns the Pending SBTs of the caller [Candidate]
+     */
+    function getPendingSBTCandidate() external view returns (bytes[] memory, address[] memory) {
+        uint length = pendingSBTCandidate[msg.sender].length;
+        bytes[] memory credentialIds = new bytes[](length);
+        for (uint i = 0; i < length; i++) {
+            credentialIds[i] = pendingSBTRequests[pendingSBTCandidate[msg.sender][i]][msg.sender];
+        }
+        return (credentialIds, pendingSBTCandidate[msg.sender]);
+    }
+
+    /**
+     * @dev Returns the Pending SBTs of the caller [Company]
+     */
+    function getPendingSBTCompany() external view returns (bytes[] memory, address[] memory) {
+        uint length = pendingSBTCompany[msg.sender].length;
+        bytes[] memory credentialIds = new bytes[](length);
+        for (uint i = 0; i < length; i++) {
+            credentialIds[i] = pendingSBTRequests[msg.sender][pendingSBTCompany[msg.sender][i]];
+        }
+        return (credentialIds, pendingSBTCompany[msg.sender]);
     }
 }
