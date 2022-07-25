@@ -17,6 +17,8 @@ contract SBT {
     mapping(address => address[]) private pendingSBTCandidate;
     mapping(address => address[]) private pendingSBTCompany;
 
+    mapping(address => mapping(address => SkillSBT[])) private issuedSBT;
+
     /** 
      * @dev Tracks the count of a company's issued SBT
      * 
@@ -93,5 +95,48 @@ contract SBT {
             credentialIds[i] = pendingSBTRequests[msg.sender][pendingSBTCompany[msg.sender][i]];
         }
         return (credentialIds, pendingSBTCompany[msg.sender]);
+    }
+
+    /**
+     * @dev Takes an address, credentialId, response and responds to the SBT
+     * Request
+     */
+    function respondToRequest(address candidate, SkillSBT memory skillSBT, bool response) external {
+        require(
+            pendingSBTRequests[msg.sender][candidate].length != 0,
+            "SBT: Candidate has not request the SBT"
+        );
+        
+        if (response == true) {
+            skillSBT.id = countIssued[msg.sender];
+            countIssued[msg.sender]++;
+            issuedSBT[msg.sender][candidate].push(skillSBT);
+        }
+        rejectRequest(candidate);
+    }
+
+
+    /**
+     * @dev Removes the request from the pending requests list.
+     */
+    function rejectRequest(address candidate) public {
+        delete pendingSBTRequests[msg.sender][candidate];
+        uint length = pendingSBTCandidate[candidate].length;
+        for (uint i = 0; i < length; i++) {
+            if (pendingSBTCandidate[candidate][i] == msg.sender) {
+                pendingSBTCandidate[candidate][i] = pendingSBTCandidate[candidate][length-1];
+                pendingSBTCandidate[candidate].pop();
+                break;
+            }
+        }
+
+        length = pendingSBTCompany[msg.sender].length;
+        for (uint i = 0; i < length; i++) {
+            if (pendingSBTCompany[msg.sender][i] == candidate) {
+                pendingSBTCompany[msg.sender][i] = pendingSBTCompany[msg.sender][length-1];
+                pendingSBTCompany[msg.sender].pop();
+                break;
+            }
+        }
     }
 }

@@ -107,7 +107,7 @@ export default function CandidatePage({address}) {
         </div>
         <div className="row"><h2>Requested Tokens</h2>[Pending]</div>
          {pendingSBTCandidate.addresses.length === 0 ? 
-            <div className="row" style={{backgroundColor: "#f5e6db"}}>"You have no pending requests."</div>
+            <div className="row" style={{backgroundColor: "#f5e6db"}}>You have no pending requests.</div>
             :
             displayPendingSBTCandidate
           }
