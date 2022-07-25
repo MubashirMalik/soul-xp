@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { web3, SBT } from '../Web3Client';
 import { handleError } from '../ErrorHandler';
 import './CandidatePage.css';
-import { addressShortner } from '../Util';
+import { addressShortner, dateFormater, decodeDifficultly, decodeTestType } from '../Util';
 
 export default function CandidatePage({address}) {
   
@@ -16,13 +16,18 @@ export default function CandidatePage({address}) {
     credentialIds: []
   })
 
+  const [issuedSBTCandidate, setIssuedSBTCandidate] = useState([])
+
   useEffect(() => {
     async function getPendingSBTCandidate() {
       let result = await SBT.methods.getPendingSBTCandidate().call({from: address, gasLimit: 300000});
       setPendingSBTCandidate({
         addresses: result[1],
         credentialIds: result[0]
-      });      
+      });
+      
+      result = await SBT.methods.getIssuedSBTCandidate().call({from: address, gasLimit: 300000});
+      setIssuedSBTCandidate(result);
     }
     getPendingSBTCandidate();
   }, [address, setPendingSBTCandidate])
@@ -64,7 +69,7 @@ export default function CandidatePage({address}) {
 
   const displayPendingSBTCandidate = pendingSBTCandidate.addresses.map((addr, index) => {
     return (
-      <div className="row" style={{backgroundColor: "#f5e6db"}}>
+      <div key={index} className="row" style={{backgroundColor: "#f5e6db"}}>
         <div>
           <div>Compay Address</div>
           <div>{addressShortner(addr)}</div>
@@ -77,34 +82,45 @@ export default function CandidatePage({address}) {
     ) 
   })
 
+  const displayIssuedSBTCandidate = issuedSBTCandidate.map((skillSBT) => {
+    return(
+      <div key={skillSBT["id"]} className="row" style={{backgroundColor: "#f5e6db"}}>
+        <div>
+          <div className="bold">Skill</div>
+          <div>{skillSBT["name"]}</div>
+        </div>
+        <div>
+          <div>Difficulty</div>
+          <div>{decodeDifficultly(skillSBT["difficulty"])}</div></div>
+        <div>
+          <div>Test Type</div>
+          <div>{decodeTestType(skillSBT["testType"])}</div>
+        </div>
+        <div>
+          <div>Issuing Authority</div>
+          <div>Crossover, 0x123</div>
+        </div>
+        <div>
+          <div>Issue Date</div>
+          <div>{ dateFormater(skillSBT["issueDay"], skillSBT["issueMonth"], skillSBT["issueYear"]) }
+          </div>
+        </div>
+      </div>
+    );
+  });
+
   return(
     <div className="Container">
       <div className="Container-view">
         <div className="row">
           <h2>Issued Tokens</h2><a title="Click to know more!" href="/">Soul Address:</a> {addressShortner(address)}
         </div>
-        <div className="row" style={{backgroundColor: "#f5e6db"}}>
-          <div>
-            <div className="bold">Skill</div>
-            <div>Cplusplus</div>
-          </div>
-          <div>
-            <div>Difficulty</div>
-            <div>Expert</div></div>
-          <div>
-            <div>Test Type</div>
-            <div>Problem Solving</div>
-          </div>
-          <div>
-            <div>Issuing Authority</div>
-            <div>Crossover, 0x123</div>
-          </div>
-          <div>
-            <div>Issue Date</div>
-            <div>13-12-1998</div>
-          </div>
-          
-        </div>
+        {issuedSBTCandidate.length === 0 ? 
+            <div className="row" style={{backgroundColor: "#f5e6db"}}>You have no issued token.</div>
+            :
+            displayIssuedSBTCandidate
+        }
+
         <div className="row"><h2>Requested Tokens</h2>[Pending]</div>
          {pendingSBTCandidate.addresses.length === 0 ? 
             <div className="row" style={{backgroundColor: "#f5e6db"}}>You have no pending requests.</div>

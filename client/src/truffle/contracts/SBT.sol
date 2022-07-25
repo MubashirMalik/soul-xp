@@ -18,6 +18,7 @@ contract SBT {
     mapping(address => address[]) private pendingSBTCompany;
 
     mapping(address => mapping(address => SkillSBT[])) private issuedSBT;
+    mapping(address => SkillSBT[]) private issuedSBTCandidate;
 
     /** 
      * @dev Tracks the count of a company's issued SBT
@@ -110,6 +111,7 @@ contract SBT {
         if (response == true) {
             skillSBT.id = countIssued[msg.sender];
             countIssued[msg.sender]++;
+            issuedSBTCandidate[candidate].push(skillSBT);
             issuedSBT[msg.sender][candidate].push(skillSBT);
         }
         rejectRequest(candidate);
@@ -138,5 +140,12 @@ contract SBT {
                 break;
             }
         }
+    }
+
+    /**
+     * @dev Returns all the SBTs issued to the caller.
+     */
+    function getIssuedSBTCandidate() external view returns (SkillSBT[] memory) {
+        return issuedSBTCandidate[msg.sender];
     }
 }
