@@ -148,4 +148,24 @@ contract SBT {
     function getIssuedSBTCandidate() external view returns (SkillSBT[] memory) {
         return issuedSBTCandidate[msg.sender];
     }
+
+    /**
+     * @dev Returns a boolean value indicating whether `company` has issued a SBT
+     * with `id` to the `candidate` or not.
+     *
+     * Requirements:
+     *
+     * - `id` cannot be greater than the total SBT issued by the `company`
+     */
+    function verifySBT(address company, address candidate, uint id) external view returns (bool) {
+        require (id >= 1 && id <= countIssued[company], "SBT: invalid id");
+        SkillSBT[] memory temp = issuedSBT[company][candidate];   
+        for (uint i = 0; i < temp.length; i++) {
+            if (temp[i].id == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

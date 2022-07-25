@@ -86,6 +86,10 @@ export default function CandidatePage({address}) {
     return(
       <div key={skillSBT["id"]} className="row" style={{backgroundColor: "#f5e6db"}}>
         <div>
+          <div className="bold">id</div>
+          <div>{skillSBT["id"]}</div>
+        </div>
+        <div>
           <div className="bold">Skill</div>
           <div>{skillSBT["name"]}</div>
         </div>

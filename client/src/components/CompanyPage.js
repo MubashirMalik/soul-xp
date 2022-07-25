@@ -19,6 +19,12 @@ export default function CompanyPage({address, isRegistered, setIsRegistered}) {
     testType: ""
   })
 
+  const [verifyFormData, setVerifyFormData] = useState({
+    id: 0,
+    candidate: "",
+    company: ""
+  })
+
   useEffect(() => {
     async function getCountIssued() {
       try {
@@ -38,15 +44,43 @@ export default function CompanyPage({address, isRegistered, setIsRegistered}) {
     getCountIssued()
   }, [address, setIsRegistered]) 
 
-  function handleSubmit(event) {
-    event.preventDefault()
-    setError("")
+  async function verifySBT(event) {
+    event.preventDefault();
+    let { id, candidate, company } = verifyFormData;
+    let _error = "";
+    if (candidate === "" || company === "") {
+      _error = "All fields are required";
+    } else if (parseInt(id) < 1) {
+      _error = "Invalid id";
+    }
+
+    if (_error === "") {
+      try {
+        let result = await SBT.methods.verifySBT(company, candidate, parseInt(id)).call({from: address, gasLimit: 300000});
+        if (result === true) {
+          displayToast("Verification Passed: Legitimate Token!", "success");
+        } else if (result === false) {
+          displayToast("Verification Failed: Invalid Token!", "error");
+        }
+        setError(_error);
+      } catch(err) {
+        setError(handleError(err.message));
+      }
+    } 
   }
 
   function handleChange(event) {
     setskillSBTFormData(prevSkillSBTFormData => {
       return {
         ...prevSkillSBTFormData, [event.target.name]: event.target.value
+      }
+    })
+  }
+
+  function handleChange2(event) {
+    setVerifyFormData(prevVerifyFormData => {
+      return {
+        ...prevVerifyFormData, [event.target.name]: event.target.value
       }
     })
   }
@@ -193,16 +227,26 @@ export default function CompanyPage({address, isRegistered, setIsRegistered}) {
         {isRegistered ?
           <div className="Form-container">  
             <h2>Verify SBT</h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={verifySBT}>
               <div className="form-error">{error}</div>
               <input 
+                name="company"
                 type="text"
-                placeholder="Placeholder"
+                placeholder="Issuing authority address"
+                onChange={handleChange2}
               />
               <input 
+                name="candidate"
                 type="text"
-                placeholder="Placeholder"
+                placeholder="Candidate address"
+                onChange={handleChange2}
               />
+              <input
+                name="id"
+                type="text"
+                placeholder="Token Id"
+                onChange={handleChange2}
+               />
               <button>Verify</button>
             </form>
           </div> :
