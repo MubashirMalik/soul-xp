@@ -15,8 +15,8 @@ export default function CompanyPage({address, isRegistered, setIsRegistered}) {
     id: 1,
     name: "",
     issueDate: 0,
-    difficulty: "",
-    testType: ""
+    difficulty: "1",
+    testType: "1"
   })
 
   const [verifyFormData, setVerifyFormData] = useState({
