@@ -1,7 +1,7 @@
 .App {
 	display: flex;
 	flex-direction: column;
-	background-color: rgba(198, 190, 238, 0.502);
+	background-color: rgba(198, 190, 238, 0.4);
 	min-height: 100vh;
   align-items: center;
 	width: 100%;

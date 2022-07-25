@@ -1,9 +1,14 @@
 footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  padding-top: 15px;
   margin-top: auto;
   background-color: white;
   height: 50px;
   width: 100%;
-  padding-top: 15px;
   text-align: center; 
-  font-size: 14px;
+  font-size: 15px;
+  line-height: 20px;
 }

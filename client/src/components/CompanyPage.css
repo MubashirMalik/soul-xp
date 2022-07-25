@@ -14,3 +14,13 @@
   border: none;
 	cursor: pointer;
 }
+
+.skill-form {
+  text-align: left;
+  padding-left: 10%;
+  padding-right: 10%;
+  width: 100%;
+  background-color: white;
+  margin-top: 10px;
+  border-radius: 10px;
+}

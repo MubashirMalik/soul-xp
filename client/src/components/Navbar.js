@@ -8,10 +8,10 @@ export default function Navbar({address}) {
 	return (
 		<div className="Navbar">
       <header>
-        <div className="logo"><Link to="/">Soul-XP</Link></div>
+        <div className="logo background"><Link to="/">Soul-XP</Link></div>
         <ul>
           { address !== "" ? 
-            <li>Connected to: { addressShortner(address) }</li> :
+            <li className="background">Connected to: { addressShortner(address) }</li> :
             <li>Not Connected!</li>
           }
           <li><button onClick={() => navigate('/candidate-page')}>Candidate Page</button></li>
