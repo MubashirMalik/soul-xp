@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { web3, SBT } from '../Web3Client';
+import { web3, SBT, GAS_LIMIT } from '../Web3Client';
 import { handleError } from '../ErrorHandler';
 import './CandidatePage.css';
 import { addressShortner, dateFormater, decodeDifficultly, decodeTestType } from '../Util';
@@ -20,13 +20,13 @@ export default function CandidatePage({address}) {
 
   useEffect(() => {
     async function getPendingSBTCandidate() {
-      let result = await SBT.methods.getPendingSBTCandidate().call({from: address, gasLimit: 300000});
+      let result = await SBT.methods.getPendingSBTCandidate().call({from: address, gasLimit: GAS_LIMIT});
       setPendingSBTCandidate({
         addresses: result[1],
         credentialIds: result[0]
       });
       
-      result = await SBT.methods.getIssuedSBTCandidate().call({from: address, gasLimit: 300000});
+      result = await SBT.methods.getIssuedSBTCandidate().call({from: address, gasLimit: GAS_LIMIT});
       setIssuedSBTCandidate(result);
     }
     getPendingSBTCandidate();
@@ -54,9 +54,9 @@ export default function CandidatePage({address}) {
 
     if (_error === "") {
       try {
-        await SBT.methods.requestSBT(formData.companyAddress, web3.utils.utf8ToHex(formData.credentialId)).send({from: address, gasLimit: 300000});
+        await SBT.methods.requestSBT(formData.companyAddress, web3.utils.utf8ToHex(formData.credentialId)).send({from: address, gasLimit: GAS_LIMIT});
         // call pending requests here
-        let result = await SBT.methods.getPendingSBTCandidate().call({from: address, gasLimit: 300000});
+        let result = await SBT.methods.getPendingSBTCandidate().call({from: address, gasLimit: GAS_LIMIT});
         setPendingSBTCandidate({
           addresses: result[1],
           credentialIds: result[0]
@@ -102,7 +102,7 @@ export default function CandidatePage({address}) {
         </div>
         <div>
           <div>Issuing Authority</div>
-          <div>Crossover, 0x123</div>
+          <div>{addressShortner(skillSBT["companyAddress"])}</div>
         </div>
         <div>
           <div>Issue Date</div>

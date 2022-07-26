@@ -11,6 +11,7 @@ contract SBT {
         uint16 issueYear;
         uint8 difficulty;
         uint8 testType;
+        string companyAddress;
     }
 
     mapping(address => mapping(address => bytes)) private pendingSBTRequests;

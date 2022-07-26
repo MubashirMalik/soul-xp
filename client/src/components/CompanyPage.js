@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { web3, SBT } from '../Web3Client';
+import { web3, SBT, GAS_LIMIT } from '../Web3Client';
 import { displayToast, addressShortner } from '../Util';
 import './CompanyPage.css';
 import { handleError } from '../ErrorHandler';
@@ -28,11 +28,11 @@ export default function CompanyPage({address, isRegistered, setIsRegistered}) {
   useEffect(() => {
     async function getCountIssued() {
       try {
-        let result = await SBT.methods.getCountIssued().call({from: address, gas: 30000});
+        let result = await SBT.methods.getCountIssued().call({from: address, gas: GAS_LIMIT});
         if (parseInt(result) !== 0) {
           setIsRegistered(true)
         }
-        result = await SBT.methods.getPendingSBTCompany().call({from: address, gasLimit: 300000});
+        result = await SBT.methods.getPendingSBTCompany().call({from: address, gasLimit: GAS_LIMIT});
         setPendingSBTCompany({
           addresses: result[1],
           credentialIds: result[0]
@@ -56,7 +56,7 @@ export default function CompanyPage({address, isRegistered, setIsRegistered}) {
 
     if (_error === "") {
       try {
-        let result = await SBT.methods.verifySBT(company, candidate, parseInt(id)).call({from: address, gasLimit: 300000});
+        let result = await SBT.methods.verifySBT(company, candidate, parseInt(id)).call({from: address, gasLimit: GAS_LIMIT});
         if (result === true) {
           displayToast("Verification Passed: Legitimate Token!", "success");
         } else if (result === false) {
@@ -88,9 +88,9 @@ export default function CompanyPage({address, isRegistered, setIsRegistered}) {
   async function registerCompany(event) {
     event.preventDefault()
     try {
-      SBT.methods.registerCompany().send({from: address, gas: 300000}).then(
+      SBT.methods.registerCompany().send({from: address, gas: GAS_LIMIT}).then(
         async (tx) => {
-          let result = await SBT.methods.getCountIssued().call({from: address, gas: 30000});
+          let result = await SBT.methods.getCountIssued().call({from: address, gas: GAS_LIMIT});
           if (parseInt(result) === 1) {
             setIsRegistered(true);
             displayToast("Company registered!", "success");
@@ -112,9 +112,9 @@ export default function CompanyPage({address, isRegistered, setIsRegistered}) {
 
   async function respondToRequest(candidate, response) {
     if (!response) {
-      await SBT.methods.rejectRequest(candidate).send({from: address, gas: 300000});
+      await SBT.methods.rejectRequest(candidate).send({from: address, gas: GAS_LIMIT});
       
-      let result = await SBT.methods.getPendingSBTCompany().call({from: address, gasLimit: 300000});
+      let result = await SBT.methods.getPendingSBTCompany().call({from: address, gasLimit: GAS_LIMIT});
       setPendingSBTCompany({
         addresses: result[1],
         credentialIds: result[0]
@@ -127,12 +127,13 @@ export default function CompanyPage({address, isRegistered, setIsRegistered}) {
         issueMonth: parseInt(skillSBTFormData.issueDate.slice(5, 7)),
         issueYear: parseInt(skillSBTFormData.issueDate.slice(0, 4)),
         difficulty: skillSBTFormData.difficulty,
-        testType: skillSBTFormData.testType
+        testType: skillSBTFormData.testType,
+        companyAddress: address
       }
       
-      await SBT.methods.respondToRequest(candidate, temp, response).send({from: address, gas: 300000});
+      await SBT.methods.respondToRequest(candidate, temp, response).send({from: address, gas: GAS_LIMIT});
 
-      let result = await SBT.methods.getPendingSBTCompany().call({from: address, gasLimit: 300000});
+      let result = await SBT.methods.getPendingSBTCompany().call({from: address, gasLimit: GAS_LIMIT});
       setPendingSBTCompany({
         addresses: result[1],
         credentialIds: result[0]
