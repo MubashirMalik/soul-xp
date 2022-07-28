@@ -8,3 +8,7 @@ export const SBT = new web3.eth.Contract(SBT_ABI, SBT_ADDRESS);
 export const GAS_LIMIT = 400000;
 
 
+/* Deployed Contract Address on Mumbai Testnet
+ * const SBT_ADDRESS = "0x6c7ee2134aed6571db4fedc32695aa5ca943708d";
+ * export const web3 = new Web3(window.ethereum);
+ */
